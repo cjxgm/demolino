@@ -1,0 +1,39 @@
+$ Demolino Script Example
+  by eXerigumo Clanjor
+  Licensed under GPLv2    $
+
+@spu { sphere
+	nslice [4 64 0s 1s]
+	nstack [4 64 0s 1s]
+}
+
+@spd { sphere
+	nslice [64 4 0s 1s]
+	nstack [64 4 0s 1s]
+}
+
+@sps { sphere
+	nslice [[2 10 0 2s] 10 0 2s]
+}
+
+@spt { timeline
+	objs (
+		(@spu 0s 1s)
+		(@spd 1s 2s)
+	)
+}
+
+@tl_main { timeline
+	objs (
+		(@spt 0s 2s)
+		(@spt 2s 4s)
+		(@spt 4s 6s)
+		(@sps 6s 8s)
+	)
+}
+
+@main { demo
+	size (320 240)
+	timeline (@tl_main 0s 8s)
+}
+
