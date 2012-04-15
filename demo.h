@@ -19,6 +19,7 @@ typedef enum ObjectType
 {
 	OT_DEMO = 1,
 	OT_TIMELINE,
+	OT_TRANS,
 	OT_SPHERE,
 }
 ObjectType;

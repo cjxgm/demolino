@@ -8,6 +8,7 @@ void compile();
 
 void compile_data(Data * d);
 void compile_sequencer(Data * d);
+void compile_vector(Data * d);
 
 #endif
 

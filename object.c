@@ -18,11 +18,13 @@ static void timeline_decl(Object * o);
 static void timeline_call(Object * o);
 static void timeline_def(Object * o);
 static void sphere_call(Object * o);
+static void trans_call(Object * o);
 
 ObjectCompiler ocs[] = {
 	{NULL, NULL, NULL},
 	{NULL, NULL, NULL},
 	{&timeline_decl, &timeline_call, &timeline_def},
+	{NULL, &trans_call, NULL},
 	{NULL, &sphere_call, NULL},
 };
 
@@ -30,6 +32,7 @@ const char * type2name[] = {
 	"(UNDEFINED)",
 	"demo",
 	"timeline",
+	"trans",
 	"sphere"
 };
 
@@ -121,5 +124,59 @@ static void sphere_call(Object * o)
 		compile_data(d);
 	else printf("16");
 	printf(");\n");
+}
+
+static void trans_call(Object * o)
+{
+	printf("\t\tglPushMatrix();\n");
+
+	Data * d;
+
+	d = object_get_param_data_by_name(o, "obj");
+	CHECK(d->type == DT_OBJ, "invalid `obj' for `trans'");
+
+	{ TRAVERSE(o->param, Param, p) {
+		if (!strcmp(p->name, "obj")) continue;
+		if (!strcmp(p->name, "mov")) {
+			printf("\t\tglTranslatef(");
+			compile_vector(p->data);
+			printf(");");
+			continue;
+		}
+		if (!strcmp(p->name, "scale")) {
+			printf("\t\tglScalef(");
+			compile_vector(p->data);
+			printf(");");
+			continue;
+		}
+		if (!strcmp(p->name, "rot")) {
+			Data * d = p->data;
+			CHECK(d->type == DT_LIST,
+					"invalid `rot' in `trans': list expected");
+			CHECK(link_length(d->l) == 3,
+					"invalid `rot' in `trans': 3 elements expected");
+
+			d = (Data *)d->l->prev;
+			printf("\t\tglRotatef(");
+			compile_data(d);
+			printf(", 0, 0, 1);\n");
+
+			d = d->prev;
+			printf("\t\tglRotatef(");
+			compile_data(d);
+			printf(", 0, 1, 0);\n");
+
+			d = d->prev;
+			printf("\t\tglRotatef(");
+			compile_data(d);
+			printf(", 1, 0, 0);\n");
+
+			continue;
+		}
+		yyerror("invalid parameter in `trans'");
+	}}
+
+	object_call(d->o.o);
+	printf("\t\tglPopMatrix();\n");
 }
 

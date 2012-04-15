@@ -47,6 +47,7 @@ int main(int argc, char * argv[])
 	glutInitWindowSize(win_w, win_h);
 	glutCreateWindow("Demolino Runtime");
 	glutIdleFunc(&idle);
+	glutKeyboardFunc(&key_down);
 
 	glMatrixMode(GL_PROJECTION);
 	gluPerspective(45, (float)win_w / (float)win_h, 1, 100);

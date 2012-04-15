@@ -7,6 +7,12 @@ $ Demolino Script Example
 	nstack [4 64 0s 1s]
 }
 
+@spl { trans
+	obj @spu
+	mov ([[10 0 0s 1s] 0 0s 1s] 0 0)
+	rot (0 [0 360 0s 1s] 0)
+}
+
 @spd { sphere
 	nslice [64 4 0s 1s]
 	nstack [64 4 0s 1s]
@@ -18,7 +24,7 @@ $ Demolino Script Example
 
 @spt { timeline
 	objs (
-		(@spu 0s 1s)
+		(@spl 0s 1s)
 		(@spd 1s 2s)
 	)
 }
@@ -35,5 +41,6 @@ $ Demolino Script Example
 @main { demo
 	size (320 240)
 	timeline (@tl_main 0s 8s)
+	length 8.5s
 }
 

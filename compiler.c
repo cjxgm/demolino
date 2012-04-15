@@ -68,6 +68,15 @@ void compile()
 		"\tlong __t = get_ticks();\n"
 	);
 	compile_sequencer(d);
+
+	// process parameter `length'
+	d = object_get_param_data_by_name(o, "length");
+	CHECK(d, "`length' expected");
+	printf("\tif (__t > ");
+	compile_data(d);
+	printf(") exit(0);\n");
+
+	// end of `render'
 	printf("}\n\n");
 
 	// compiler(define) all the objects
@@ -152,5 +161,24 @@ void compile_sequencer(Data * d)
 	printf(";\n");
 	object_call(o);
 	printf("\t}\n");
+}
+
+void compile_vector(Data * d)
+{
+	CHECK(d->type == DT_LIST,
+			"invalid vector: list expected");
+	CHECK(link_length(d->l) == 3,
+			"invalid vector: 3 elements expected");
+
+	d = (Data *)d->l->next;
+	compile_data(d);
+	printf(", ");
+
+	d = d->next;
+	compile_data(d);
+	printf(", ");
+
+	d = d->next;
+	compile_data(d);
 }
 
