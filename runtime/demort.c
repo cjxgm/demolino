@@ -1,11 +1,11 @@
 
 #include <stdio.h>
-
-static long ticks = 0;
+#include <stdlib.h>
+#include <GL/glut.h>
 
 long get_ticks()
 {
-	return ticks++;
+	return glutGet(GLUT_ELAPSED_TIME);
 }
 
 float lirp(float v, float vf, float vt, float df, float dt)
@@ -15,13 +15,50 @@ float lirp(float v, float vf, float vt, float df, float dt)
 
 void draw_sphere(int nslice, int nstack)
 {
-	printf("[%10d]sphere: %d %d\n", ticks, nslice, nstack);
+	glutWireSphere(1, nslice, nstack);
 }
 
 #include "demo.c"
 
-int main()
+void idle()
 {
-	while (1) render();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glPushMatrix(); {
+		glTranslatef(0, 0, -10);
+		render();
+	} glPopMatrix();
+
+	glutSwapBuffers();
+}
+
+void key_down(unsigned char k, int x, int y)
+{
+	switch (k) {
+		case '\e':
+			exit(0);
+	}
+}
+
+int main(int argc, char * argv[])
+{
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+	glutInitWindowSize(win_w, win_h);
+	glutCreateWindow("Demolino Runtime");
+	glutIdleFunc(&idle);
+
+	glMatrixMode(GL_PROJECTION);
+	gluPerspective(45, (float)win_w / (float)win_h, 1, 100);
+	glMatrixMode(GL_MODELVIEW);
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+	glEnable(GL_CULL_FACE);
+
+	glClearColor(0, 0, 0, 0);
+	glEnable(GL_DEPTH_TEST);
+	glClearDepth(1.0);
+
+	glutMainLoop();
+
 	return 0;
 }
