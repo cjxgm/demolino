@@ -5,21 +5,23 @@
 #include <string.h>
 %}
 
-ID		[a-zA-Z_][a-zA-Z0-9_]*
-OBJ		@{ID}
+OBJ		@[a-zA-Z_][a-zA-Z0-9_]*
+ID		[a-zA-Z_\-][a-zA-Z0-9_\-]*
 NUM		[+\-]?[0-9]+(\.[0-9]+)?s?
 SYMBOL	[{}\[\]()]
-COMMENT	((#|\/\/).*$)|(\$[^\$]*\$)
+CMT1	#.*$
+CMT2	\/\/.*$
+CMT3	\$[^\$]*\$
 
 %%
 
-{ID} {
-	yylval.str = strdup(yytext);
-	return TKID;
-}
 {OBJ} {
 	yylval.str = strdup(&yytext[1]);
 	return TKOBJ;
+}
+{ID} {
+	yylval.str = strdup(yytext);
+	return TKID;
 }
 {NUM} {
 	yylval.num = atof(yytext);
@@ -29,8 +31,10 @@ COMMENT	((#|\/\/).*$)|(\$[^\$]*\$)
 {SYMBOL} {
 	return yytext[0];
 }
-[ \t\n\r] ;
-{COMMENT} ;
+[ \t\n\r]	;
+{CMT1}		;
+{CMT2}		;
+{CMT3}		;
 . {
 	yyerror("invalid character");
 	return -1;

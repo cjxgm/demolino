@@ -1,9 +1,12 @@
 %{
+#include <stdio.h>
 #include <string.h>
 #include "demo.h"
 #include "util.h"
 #include "object.h"
 
+static int noname_obj_cnt = 0;
+static char noname_obj_name[64];
 %}
 
 %union
@@ -22,6 +25,7 @@
 
 %type <obj> obj_decl
 %type <obj> obj_body
+%type <link> params_or_none;
 %type <link> params;
 %type <param> param;
 
@@ -46,7 +50,7 @@ obj_decl: TKOBJ obj_body {
 }
 ;
 
-obj_body: '{' TKID  params '}' {
+obj_body: '{' TKID params_or_none '}' {
 	$$ = NEW(Object);
 	link_addtail(objs, $$);
 
@@ -54,6 +58,13 @@ obj_body: '{' TKID  params '}' {
 
 	$$->name = NULL;
 	$$->param = $3;
+}
+;
+
+params_or_none: params
+| {
+	$$ = NEW(Link);
+	link_init($$);
 }
 ;
 
@@ -92,6 +103,12 @@ data_obj: TKOBJ {
 	$$ = NEW(Data);
 	$$->type = DT_OBJ;
 	$$->o.name = $1;
+}
+| obj_body {
+	$$ = NEW(Data);
+	$$->type = DT_OBJ;
+	sprintf(noname_obj_name, "%dnoname", noname_obj_cnt++);
+	$$->o.name = $1->name = strdup(noname_obj_name);
 }
 ;
 

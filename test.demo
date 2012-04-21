@@ -18,9 +18,6 @@ $ Demolino Script Example
 	nstack [64 4 0s 1s]
 }
 
-@sps { sphere
-	nslice [[2 10 0 2s] 10 0 2s]
-}
 
 @spt { timeline
 	objs (
@@ -34,7 +31,13 @@ $ Demolino Script Example
 		(@spt 0s 2s)
 		(@spt 2s 4s)
 		(@spt 4s 6s)
-		(@sps 6s 8s)
+		({ timeline			// anonymous timeline test
+			objs (
+				({ sphere	// anonymous sphere test
+					nslice [[2 10 0 2s] 10 0 2s]
+				} 0s 2s)
+			)
+		} 6s 8s)
 	)
 }
 

@@ -112,6 +112,11 @@ static void timeline_def(Object * o)
 	printf("}\n");
 }
 
+////////////////////////////////////////
+//
+// sphere
+//
+
 static void sphere_call(Object * o)
 {
 	Data * d;
@@ -125,6 +130,12 @@ static void sphere_call(Object * o)
 	else printf("16");
 	printf(");\n");
 }
+
+////////////////////////////////////////
+//
+// trans
+//
+
 
 static void trans_call(Object * o)
 {
@@ -140,7 +151,7 @@ static void trans_call(Object * o)
 		if (!strcmp(p->name, "mov")) {
 			printf("\t\tglTranslatef(");
 			compile_vector(p->data);
-			printf(");");
+			printf(");\n");
 			continue;
 		}
 		if (!strcmp(p->name, "scale")) {

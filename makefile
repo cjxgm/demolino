@@ -1,6 +1,6 @@
 
 CC = gcc
-CFLAGS = -O3 -Wall
+CFLAGS = -Wall -O3
 # For debugging, replace "-O3" with "-g -DDEBUG"
 
 all: demolino
